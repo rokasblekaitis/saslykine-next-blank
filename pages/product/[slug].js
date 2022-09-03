@@ -1,10 +1,13 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { Store } from '../../utils/Store';
 import Layout from '../../components/Layout';
 import data from '../../utils/data';
 import Image from 'next/image';
+import React, { useContext } from 'react';
 
 export default function ProductScreen() {
+  const { state, dispatch } = useContext(Store);
   const { query } = useRouter();
   const { slug } = query;
   const product = data.products.find((x) => x.slug === slug);
@@ -12,6 +15,17 @@ export default function ProductScreen() {
   if (!product) {
     return <div>Nerasta</div>;
   }
+
+  const addToCartHandler = () => {
+    const existItem = state.cart.cartItems.find((x) => x.slug === product.slug);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+    if (product.countInStock < quantity) {
+      alert('Atsiprašome, produkto nebeturime.');
+      return;
+    }
+    dispatch({ type: 'CART_ADD_ITEM', payload: { ...product, quantity } });
+    console.log('asd');
+  };
 
   return (
     <Layout title={product.name}>
@@ -48,7 +62,10 @@ export default function ProductScreen() {
                 <div>Statusas</div>
                 <div>{product.stock > 0 ? 'Turime' : 'Neturime'}</div>
               </div>
-              <button className="rounded bg-amber-300 py-2 px-4 shadow outline-none hover:bg-amber-400 active:bg-amber-500 w-full">
+              <button
+                className="rounded bg-amber-300 py-2 px-4 shadow outline-none hover:bg-amber-400 active:bg-amber-500 w-full"
+                onClick={addToCartHandler}
+              >
                 Pridėti į krepšelį
               </button>
             </div>
