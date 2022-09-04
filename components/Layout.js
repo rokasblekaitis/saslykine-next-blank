@@ -26,7 +26,7 @@ export default function Layout({ title, children }) {
               <a className="text-lg font-bold">„Šašlykinė“</a>
             </Link>
             <div>
-              <Link href="/cart">
+              <Link href="/krepselis">
                 <a className="p-2">
                   Cart
                   {cart.cartItems.length > 0 && (
